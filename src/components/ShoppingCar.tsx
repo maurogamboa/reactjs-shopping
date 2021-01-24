@@ -28,7 +28,10 @@ export default function ShoppingCart() {
     <div>
       <p>Shopping Car</p>
       <ol>
-        {items.map((item) => ShoppingCartItem(item))}
+        {items.length 
+          ? items.map((item) => ShoppingCartItem(item))
+          : <p>Your cart is empty</p>
+        }
       </ol>
     </div>
   )
