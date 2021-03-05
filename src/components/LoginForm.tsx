@@ -1,13 +1,20 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Checkbox } from "antd";
+import React, { Dispatch } from "react";
+import { Form, Input, Button, Checkbox, Alert } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { UserAuthenticationActionTypes, UserAuthenticationState } from "../store/types/userAuth";
+import { loginRequestAsync } from "../store/actions";
 
 export default function LoginForm() {
+  const store = useSelector<UserAuthenticationState, UserAuthenticationState>(
+    (state) => state,
+  );
+  const dispatch: Dispatch<UserAuthenticationActionTypes> = useDispatch();
+
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
-    setLoading(true);
+    dispatch(loginRequestAsync(values.username, values.password))
   };
-  const [loading, setLoading] = useState(false);
 
   return (
     <Form
@@ -18,6 +25,15 @@ export default function LoginForm() {
       }}
       onFinish={onFinish}
     >
+      {store.error && (
+        <Alert
+          message="The username or password is incorrect"
+          type="error"
+          showIcon
+          closable
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Form.Item
         name="username"
         rules={[
@@ -62,7 +78,7 @@ export default function LoginForm() {
           type="primary"
           htmlType="submit"
           className="login-form-button"
-          loading={loading}
+          loading={store.loading}
           style={{ width: "100%" }}
         >
           Log in
